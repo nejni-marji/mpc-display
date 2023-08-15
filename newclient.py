@@ -167,7 +167,9 @@ class Player():
 		optStr = '{}, {}%'.format(
 				data['ersc'], data['volume'],
 				)
-		statusStr = color(timeStr + '\n' + optStr, playColor)
+		# Apply color to each line individually to prevent issues with wrapping
+		# later on.
+		statusStr = color(timeStr, playColor) + '\n' + color(optStr, playColor)
 
 		# finalize display output
 		display = songStr + '\n' + statusStr
