@@ -356,11 +356,11 @@ class Player():
 		return ''.join(vals)
 
 	def formatTextPL(self, song, curr=False):
-		# TODO: reorganize this function
 		num = int(song['pos']) + 1
-		title = song['title']
+		title = self.getProp(song, 'title', 'Unknown')
+		entry = title
 		numstr = '%%%ii' % len(self.plist[-1]['pos']) % num
-		resp = '  %s  %s' % (numstr, title)
+		resp = '  %s  %s' % (numstr, entry)
 		if curr:
 			resp = self.color('>' + resp[1:], '1')
 		return resp
