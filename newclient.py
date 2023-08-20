@@ -24,10 +24,10 @@ class Player():
 		except KeyError:
 			self.isDebug = False
 		if self.isDebug:
-			# self.debug = {'display': 0, 'idle': 0, 'meta': 0}
-			self.debug = {}
+			# self.debugCounter = {'display': 0, 'idle': 0, 'meta': 0}
+			self.debugCounter = {}
 			for i in 'display idle meta'.split(' '):
-				self.debug[i] = 0
+				self.debugCounter[i] = 0
 		self.interactive = interactive
 		# Initialize object
 		self.startup()
@@ -101,7 +101,7 @@ class Player():
 
 	def updateMetadata(self):
 		if self.isDebug:
-			self.debug['meta'] += 1
+			self.debugCounter['meta'] += 1
 		# Create a class-internal manifest of the data we actually care about,
 		# in the format we actually care about. It's created from a cache of the
 		# server state.
@@ -170,10 +170,10 @@ class Player():
 		# finalize display output
 		display = songStr + '\n' + statusStr
 		if self.isDebug:
-			self.debug['display'] += 1
+			self.debugCounter['display'] += 1
 			# Inject debug data into the now playing text.
-			for i in self.debug.keys():
-				display += ' %s: %i' % (i[0].upper(), self.debug[i])
+			for i in self.debugCounter.keys():
+				display += ' %s: %i' % (i[0].upper(), self.debugCounter[i])
 
 		return display
 
@@ -304,7 +304,7 @@ class Player():
 						'options'  : self.optionsChange,
 				}[i]()
 			if self.isDebug:
-				self.debug['idle'] += 1
+				self.debugCounter['idle'] += 1
 
 			# At the end of the idle loop, always print the display. This
 			# involves no network operations, so it should be safe to do so.
