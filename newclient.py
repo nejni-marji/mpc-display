@@ -17,7 +17,6 @@ COLOR = '%s[%%sm' % ESC
 
 class Player():
 	def __init__(self, interactive=False):
-		self.DEBUG = False
 		self.interactive = interactive
 		# Initialize object
 		self.startup()
