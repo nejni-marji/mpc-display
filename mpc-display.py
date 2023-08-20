@@ -117,7 +117,10 @@ class Player():
 		metadata['lst_total'] = len(plist)
 		metadata['time_curr'] = int(float(self.getProp(status, 'elapsed', 0)))
 		metadata['time_song'] = int(float(self.getProp(status, 'duration', 0)))
-		metadata['time_pct']  = int(100*metadata['time_curr']/metadata['time_song'])
+		try:
+			metadata['time_pct'] = int(100*metadata['time_curr']/metadata['time_song'])
+		except ZeroDivisionError:
+			metadata['time_pct'] = 0
 		try:
 			metadata['ersc']  = self.getERSC(status)
 		except KeyError:
