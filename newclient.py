@@ -71,34 +71,6 @@ class Player():
 		except KeyboardInterrupt:
 			self.shutdown()
 
-		if False:
-			pass
-			# I'm abandoning the notion of reading user input whatsoever. Using
-			# getch() causes prints to the screen to not work right, or
-			# something, so it's not worth it.
-			# The old code is provided here:
-
-			# try:
-			# 	# # Somehow, this is supposed to parse return-separated inputs?
-			# 	for line in sys.stdin:
-			# 		line = line.rstrip()
-			# 	# while True:
-			# 	# 	line = getch()
-			# 		if line == 'q':
-			# 			self.shutdown()
-			# 			break
-			# 		elif line == '':
-			# 			self.printDisplay()
-			# 		# elif line == 's':
-			# 		# 	print(self.getTextNP())
-			# 		# elif line == 'p':
-			# 		# 	print(self.getTextPL())
-			# 		# elif line == 'u':
-			# 		# 	self.initializeCache()
-			# except KeyboardInterrupt:
-			# 	self.shutdown()
-			pass
-
 	def initializeCache(self):
 		pass
 		# example of what state we want to store, generally:
