@@ -309,7 +309,7 @@ class Player():
 				songA = self.getProp(self.song, 'id', None)
 				time.sleep(delayTime)
 				songB = self.getProp(self.song, 'id', None)
-				if songA == songB and self.getProp(self.status, 'state') == 'play':
+				if songA == songB and self.getProp(self.status, 'state', 'paused') == 'play':
 					self.metadata['time_curr'] += delayTime
 
 				# Finally, show the display.
