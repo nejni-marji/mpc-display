@@ -57,11 +57,13 @@ class Player():
 		# self.client.noidle()
 		# Join with a zero timeout to immediately kill the threads.
 		self.idleThread.join(timeout=0)
-		self.displayThread.join(timeout=0)
+		if self.interactive:
+			self.displayThread.join(timeout=0)
 		# Properly disconnect from MPD.
 		self.client.close()
 		self.client.disconnect()
-		exit()
+		if self.interactive:
+			exit()
 
 	def pollUser(self):
 		try:
@@ -274,7 +276,8 @@ class Player():
 			# involves no network operations, so it should be safe to do so.
 			# This line may be commented out temporarily for testing purposes,
 			# but generally, it *is* meant to be run.
-			self.printDisplay()
+			if self.interactive:
+				self.printDisplay()
 
 	def displayLoop(self):
 		# This function is meant to redraw the graphical display every so often.
