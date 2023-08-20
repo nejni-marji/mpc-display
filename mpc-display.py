@@ -10,7 +10,7 @@ import ansiwrap
 
 ESC = '\x1b'
 COLOR = '%s[%%sm' % ESC
-CLEAR = ESC + '[H' + ESC + '[2J'
+# CLEAR = ESC + '[H' + ESC + '[2J'
 
 
 
@@ -272,7 +272,7 @@ class Player():
 		padding = '\n' * paddingHeight
 		text += padding
 
-		print(CLEAR + text, end='')
+		print(text, end='')
 		return
 
 
