@@ -197,7 +197,7 @@ class Player():
 		plSize   = len(self.plist)
 		# If the playlist is empty, we can't show anything.
 		if plSize == 0:
-			return '\n' * (plHeight-1)
+			return ''
 		try:
 			# Rare case of not using getProp(), to save on try/except clauses.
 			currPos  = int(self.song['pos'])
@@ -220,13 +220,7 @@ class Player():
 			# probably okay?
 			resp.append(self.formatTextPL(self.plist[i], i==currPos))
 
-		# Join the lines and pad the end with newlines, because we don't clear
-		# the screen first.
-		padding = '\n' * (plHeight - len(resp))
-		resp = '\n'.join(resp) + padding
-
-		# TODO: add text wrapping!
-		# resp = self.wrapTextPL(resp)
+		resp = '\n'.join(resp)
 
 		return resp
 
@@ -328,7 +322,6 @@ class Player():
 				pass
 
 
-
 	# helper functions
 
 	def getProp(self, data, prop, default):
@@ -394,7 +387,6 @@ class Player():
 
 	def color(self, s, ansi):
 		return COLOR % ansi + s + COLOR % 0
-
 
 
 	# mutator helper functions
