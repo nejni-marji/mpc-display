@@ -391,7 +391,6 @@ class Player():
 			tail = curr+half
 			if display%2 == 0: tail += 1
 
-			if self.DEBUG: print('h: %i, t: %i' % (head, tail))
 			# Values are invalid if the start of the list is before 0, or if the
 			# end of the list is after the end of the list.
 			headError = head < 0
@@ -407,7 +406,6 @@ class Player():
 			else:
 				index = head
 
-		if self.DEBUG: print('he: %s, te: %s, i: %i' % (headError, tailError, index))
 		return index
 
 	def wrap(self, text, width, indent):
