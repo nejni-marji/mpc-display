@@ -312,9 +312,9 @@ class Player():
 			# can add the amount of time we waited to the current time.
 			if self.getProp(self.status, 'state', 'paused')  == 'play':
 				delayTime = 2
-				songA = self.getProp(song, 'id', None)
+				songA = self.getProp(self.song, 'id', None)
 				time.sleep(delayTime)
-				songB = self.getProp(song, 'id', None)
+				songB = self.getProp(self.song, 'id', None)
 				if songA == songB and self.getProp(self.status, 'state') == 'play':
 					self.metadata['time_curr'] += delayTime
 
