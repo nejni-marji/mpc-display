@@ -360,7 +360,10 @@ class Player():
 
 	def formatTextPL(self, song, curr=False):
 		num = int(song['pos']) + 1
-		title = self.getProp(song, 'title', 'Unknown')
+		title = self.getProp(song, 'title', None)
+		if not title:
+			title = self.getProp(song, 'file', 'Unknown')
+			title = title.split('/')[-1]
 		entry = title
 		numstr = '%%%ii' % len(self.plist[-1]['pos']) % num
 		resp = '  %s  %s' % (numstr, entry)
