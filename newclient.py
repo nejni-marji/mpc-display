@@ -18,6 +18,7 @@ COLOR = '%s[%%sm' % ESC
 class Player():
 	def __init__(self, interactive=False):
 		self.DEBUG = False
+		self.interactive = interactive
 		# Initialize object
 		self.startup()
 		# Initialize data
@@ -26,8 +27,9 @@ class Player():
 		self.idleThread = threading.Thread(target=self.idleLoop, args=())
 		self.idleThread.start()
 		# Theoretically, this is where regular updates are drawn to the screen.
-		self.displayThread = threading.Thread(target=self.displayLoop, args=())
-		self.displayThread.start()
+		if interactive:
+			self.displayThread = threading.Thread(target=self.displayLoop, args=())
+			self.displayThread.start()
 		# If we aren't importing the library, read user input.
 		if interactive:
 			self.printDisplay()
@@ -41,14 +43,16 @@ class Player():
 		self.client.connect('localhost', 6600)
 		self.quit = False
 		# Hide the cursor.
-		print(ESC + '[?25l', end='')
+		if self.interactive:
+			print(ESC + '[?25l', end='')
 
 	def shutdown(self):
 		# idleLoop() will get an error, it needs to know we're quitting, or else
 		# it will re-raise that error.
 		self.quit = True
 		# Unhide the cursor.
-		print(ESC + '[?25h', end='')
+		if self.interactive:
+			print(ESC + '[?25h', end='')
 		# This function isn't defined, actually. It's sad :(
 		# self.client.noidle()
 		# Join with a zero timeout to immediately kill the threads.
