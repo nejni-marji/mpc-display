@@ -53,8 +53,8 @@ class Player():
 		# Unhide the cursor.
 		if self.interactive:
 			print(ESC + '[?25h', end='')
-		# This function isn't defined, actually. It's sad :(
-		# self.client.noidle()
+		# Stop idling.
+		self.client.noidle()
 		# Join with a zero timeout to immediately kill the threads.
 		self.idleThread.join(timeout=0)
 		if self.interactive:
@@ -301,11 +301,7 @@ class Player():
 			# Basically... client.idle() will raise ConnectionError if the
 			# thread it's in gets killed. If we're going to quit, we can just
 			# break instead, and otherwise the error will be re-raised.
-			try:
-				r = self.client.idle(*subsystems)
-			finally:
-				if self.quit:
-					break
+			r = self.client.idle(*subsystems)
 
 			# Run one of several update functions based on what event was
 			# triggered.
