@@ -73,10 +73,31 @@ class Player():
 
 	def pollUser(self):
 		try:
-			while True:
-				time.sleep(60)
+			# Somehow, this is supposed to parse return-separated inputs?
+			for line in sys.stdin:
+				line = line.rstrip()
+				if line == '':
+					self.sendCommand('t')
+				elif line == 'q':
+					self.shutdown()
+					break
+				elif line in ['t', 'toggle', 'p', 'prev', 'n', 'next']:
+					self.sendCommand(line[0])
+				else:
+					self.printDisplay()
 		except KeyboardInterrupt:
 			self.shutdown()
+
+	def sendCommand(self, key):
+		cmd = {
+				't': self.client.pause,
+				'p': self.client.previous,
+				'n': self.client.next,
+				}[key]
+		self.client.noidle()
+		time.sleep(0.1)
+		cmd()
+
 
 	def initializeCache(self):
 		pass
@@ -239,6 +260,8 @@ class Player():
 		# Get the size of the terminal, for wrapping, cropping, and padding.
 		termSize = os.get_terminal_size()
 		tw, th = termSize
+		if self.interactive:
+			th -= 1
 
 		# getTextNP() is perfectly fine, it doesn't need fixing.
 		textNP = self.getTextNP()
@@ -273,6 +296,7 @@ class Player():
 		text += padding
 
 		print(text, end='')
+		if self.interactive: print('\n:', end='')
 		return
 
 
