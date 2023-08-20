@@ -73,7 +73,7 @@ class Player():
 
 	def initializeCache(self):
 		pass
-		# example of what state we want to store, generally:
+		# Example of what state we want to store, generally:
 		# EarthBound 'Battling Organs' OC ReMix
 		# Mazedude (#1371/3697)
 		# http://ocremix.org
