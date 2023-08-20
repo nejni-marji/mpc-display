@@ -73,8 +73,7 @@ class Player():
 
 	def pollUser(self):
 		try:
-			while True:
-				time.sleep(60)
+			self.idleThread.join()
 		except KeyboardInterrupt:
 			self.shutdown()
 
