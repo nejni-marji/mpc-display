@@ -18,6 +18,16 @@ CLEAR = ESC + '[H' + ESC + '[2J'
 
 class Player():
 	def __init__(self, interactive=False):
+		# Set up some debug flags.
+		try:
+			self.isDebug = os.environ['DEBUG'] in '1 True true yes on'.split(' ')
+		except KeyError:
+			self.isDebug = False
+		if self.isDebug:
+			# self.debug = {'display': 0, 'idle': 0, 'meta': 0}
+			self.debug = {}
+			for i in 'display idle meta'.split(' '):
+				self.debug[i] = 0
 		self.interactive = interactive
 		# Initialize object
 		self.startup()
@@ -90,6 +100,8 @@ class Player():
 		self.updateMetadata()
 
 	def updateMetadata(self):
+		if self.isDebug:
+			self.debug['meta'] += 1
 		# Create a class-internal manifest of the data we actually care about,
 		# in the format we actually care about. It's created from a cache of the
 		# server state.
@@ -157,6 +169,11 @@ class Player():
 
 		# finalize display output
 		display = songStr + '\n' + statusStr
+		if self.isDebug:
+			self.debug['display'] += 1
+			# Inject debug data into the now playing text.
+			for i in self.debug.keys():
+				display += ' %s: %i' % (i[0].upper(), self.debug[i])
 
 		return display
 
@@ -286,6 +303,8 @@ class Player():
 						'mixer'    : self.mixerChange,
 						'options'  : self.optionsChange,
 				}[i]()
+			if self.isDebug:
+				self.debug['idle'] += 1
 
 			# At the end of the idle loop, always print the display. This
 			# involves no network operations, so it should be safe to do so.
