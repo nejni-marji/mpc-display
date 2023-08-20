@@ -124,26 +124,34 @@ class Player():
 		status = self.status
 		song   = self.song
 		plist  = self.plist
+
 		# Store copies of all the data we care about.
-		# TODO: handle key errors
-		# TODO: optimize the getAlbumTotal() call
-		times = [int(i) for i in status['time'].split(':')]
-		self.metadata = {
-				'title'      : song['title'],
-				'artist'     : song['artist'],
-				'alb_track'  : int(song['track']),
-				'alb_total'  : int(self.getAlbumTotal(song)),
-				'album'      : song['album'],
-				'state'      : status['state'],
-				'lst_track'  : int(status['song']) + 1,
-				'lst_total'  : len(plist),
-				'time_curr'  : int(times[0]),
-				'time_song'  : int(times[1]),
-				'time_pct'   : int(100*times[0]/times[1]),
-				'ersc'       : self.getERSC(status),
-				'volume'     : int(status['volume']),
-		}
-		self.album = song['album']
+		metadata = {}
+		metadata['title']     = self.getProp(song, 'title', 'Unknown')
+		metadata['artist']    = self.getProp(song, 'artist', 'Unknown')
+		metadata['alb_track'] = int(self.getProp(song, 'track', 0))
+		metadata['alb_total'] = self.getAlbumTotal(song)
+		metadata['album']     = self.getProp(song, 'album', 'Unknown')
+		metadata['state']     = self.getProp(status, 'state', None)
+		# The default is -1, so when we add 1, it becomes 0.
+		metadata['lst_track'] = int(self.getProp(status, 'song', -1)) + 1
+		metadata['lst_total'] = len(plist)
+		try:
+			# Rare case of not using getProp(), to save on try/except clauses.
+			times = [int(i) for i in status['time'].split(':')]
+			metadata['time_curr'] = int(times[0])
+			metadata['time_song'] = int(times[1])
+			metadata['time_pct']  = int(100*times[0]/times[1])
+		except KeyError:
+			metadata['time_curr'] = 0
+			metadata['time_song'] = 0
+			metadata['time_pct']  = 0
+		try:             metadata['ersc']   = self.getERSC(status)
+		except KeyError: metadata['ersc']   = '????'
+		metadata['volume'] = int(self.getProp(status, 'volume', -1))
+
+		# Publish the metadata to shared state.
+		self.metadata = metadata
 
 	def getTextNP(self):
 		data = self.metadata
@@ -187,15 +195,29 @@ class Player():
 		# Get display plHeight, playlist size, and current playlist index.
 		plHeight = os.get_terminal_size()[1] - NP_HEIGHT
 		plSize   = len(self.plist)
-		currPos  = int(self.song['pos'])
+		# If the playlist is empty, we can't show anything.
+		if plSize == 0:
+			return '\n' * (plHeight-1)
+		try:
+			# Rare case of not using getProp(), to save on try/except clauses.
+			currPos  = int(self.song['pos'])
+			hasCurrPos = True
+		except KeyError:
+			currPos = None
+			hasCurrPos = False
 
 		# Get the index we should start displaying from.
-		head = self.getPlistIndex(plHeight, plSize, currPos)
+		if hasCurrPos:
+			head = self.getPlistIndex(plHeight, plSize, currPos)
+		else:
+			head = 0
 		# The tail can't be greater than the length of the playlist.
 		tail = min(plSize, head+plHeight)
 
 		resp = []
 		for i in range(head, tail):
+			# We have already checked that plist isn't empty, so this is
+			# probably okay?
 			resp.append(self.formatTextPL(self.plist[i], i==currPos))
 
 		# Join the lines and pad the end with newlines, because we don't clear
@@ -213,6 +235,7 @@ class Player():
 		# TODO: this is a debug command
 		width = min(width, 50)
 
+		# TODO: make sure this doesn't fail.
 		indent = '.' * (4 + len(self.plist[-1]['pos']))
 		entries = text.split('\n')
 		new_entries = []
@@ -287,12 +310,12 @@ class Player():
 
 			# If the current song before and after waiting is the same, then we
 			# can add the amount of time we waited to the current time.
-			if self.status['state'] == 'play':
+			if self.getProp(self.status, 'state', 'paused')  == 'play':
 				delayTime = 2
-				songA = self.song['id']
+				songA = self.getProp(song, 'id', None)
 				time.sleep(delayTime)
-				songB = self.song['id']
-				if songA == songB and self.status['state'] == 'play':
+				songB = self.getProp(song, 'id', None)
+				if songA == songB and self.getProp(self.status, 'state') == 'play':
 					self.metadata['time_curr'] += delayTime
 
 				# Finally, show the display.
@@ -317,7 +340,7 @@ class Player():
 	def getAlbumTotal(self, song):
 		# TODO: optimize this by caching the current album, and not updating if
 		# the album hasn't changed.
-		album = song['album']
+		album = self.getProp(song, 'album', None)
 		return len(self.client.find('album', album))
 
 	def getERSC(self, status):
