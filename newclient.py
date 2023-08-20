@@ -308,6 +308,12 @@ class Player():
 
 	# helper functions
 
+	def getProp(self, data, prop, default):
+		try:
+			return data[prop]
+		except KeyError:
+			return default
+
 	def getAlbumTotal(self, song):
 		# TODO: optimize this by caching the current album, and not updating if
 		# the album hasn't changed.
