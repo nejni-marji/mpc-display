@@ -288,7 +288,8 @@ class Player():
 			# Run one of several update functions based on what event was
 			# triggered.
 			# TODO: optimize these functions by bringing them back into
-			# idleLoop(), so that we only have to reference updateMetadata() once.
+			# idleLoop(), so that we only have to reference updateMetadata()
+			# once.
 			for i in r:
 				{
 						'playlist' : self.playlistChange,
