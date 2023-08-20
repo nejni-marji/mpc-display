@@ -133,6 +133,7 @@ class Player():
 		try:             metadata['ersc']   = self.getERSC(status)
 		except KeyError: metadata['ersc']   = '????'
 		metadata['volume'] = int(self.getProp(status, 'volume', -1))
+		metadata['xfade']  = int(self.getProp(status, 'xfade', 0))
 
 		# Publish the metadata to shared state.
 		self.metadata = metadata
@@ -163,6 +164,8 @@ class Player():
 		optStr = '{}, {}%'.format(
 				data['ersc'], data['volume'],
 				)
+		if data['xfade']:
+			optStr += ' (x: %i)' % data['xfade']
 		# Apply color to each line individually to prevent issues with wrapping
 		# later on.
 		statusStr = color(timeStr, playColor) + '\n' + color(optStr, playColor)
