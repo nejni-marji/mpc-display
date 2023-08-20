@@ -317,9 +317,8 @@ class Player():
 					self.printDisplay()
 
 			else:
-				# r = self.client.idle('player')
 				time.sleep(5)
-				pass
+				self.printDisplay()
 
 
 	# helper functions
