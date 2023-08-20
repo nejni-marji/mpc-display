@@ -204,7 +204,7 @@ class Player():
 		resp = '\n'.join(resp) + padding
 
 		# TODO: add text wrapping!
-		resp = self.wrapTextPL(resp)
+		# resp = self.wrapTextPL(resp)
 
 		return resp
 
