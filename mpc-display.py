@@ -122,9 +122,9 @@ class Player():
 		except ZeroDivisionError:
 			metadata['time_pct'] = 0
 		try:
-			metadata['ersc']  = self.getERSC(status)
+			metadata['ersc'] = self.getERSC(status)
 		except KeyError:
-			metadata['ersc']  = '????'
+			metadata['ersc'] = '????'
 		metadata['volume']    = int(self.getProp(status, 'volume', -1))
 		metadata['xfade']     = int(self.getProp(status, 'xfade', 0))
 
