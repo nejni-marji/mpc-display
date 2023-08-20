@@ -366,8 +366,6 @@ class Player():
 		return resp
 
 	def getPlistIndex(self, display, total, curr):
-		# TODO: reorganize this function
-		# This function is magic.
 		if total <= display:
 			index = 0
 
