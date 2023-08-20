@@ -396,6 +396,7 @@ class Player():
 		return COLOR % ansi + s + COLOR % 0
 
 
+
 	# mutator helper functions
 
 	def playlistChange(self):
