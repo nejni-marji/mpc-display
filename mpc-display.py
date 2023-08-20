@@ -358,7 +358,12 @@ class Player():
 	def formatTextPL(self, song, curr=False):
 		num = int(song['pos']) + 1
 		title = self.getProp(song, 'title', 'Unknown')
-		entry = title
+		artist = self.getProp(song, 'artist', 'Unknown')
+		if artist.startswith('The '): artist = artist[4:]
+		ARTIST_MAX = 12
+		if len(artist) > ARTIST_MAX:
+			artist = artist[:ARTIST_MAX] + '…'
+		entry = '%s - %s' % (artist, title)
 		numstr = '%%%ii' % len(self.plist[-1]['pos']) % num
 		resp = '  %s  %s' % (numstr, entry)
 		if curr:
