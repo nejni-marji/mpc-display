@@ -188,12 +188,12 @@ class Player():
 
 		return display
 
-	def getTextPL(self):
-		# This variable has to account for the readline at the bottom.
-		NP_HEIGHT = 4
+	def wrapTextNP(self, text, width):
+		resp = self.wrap(text, width, '')
+		return resp
 
-		# Get display plHeight, playlist size, and current playlist index.
-		plHeight = os.get_terminal_size()[1] - NP_HEIGHT
+	def getTextPL(self, height):
+		# Get playlist size, and current playlist index.
 		plSize   = len(self.plist)
 		# If the playlist is empty, we can't show anything.
 		if plSize == 0:
@@ -208,11 +208,11 @@ class Player():
 
 		# Get the index we should start displaying from.
 		if hasCurrPos:
-			head = self.getPlistIndex(plHeight, plSize, currPos)
+			head = self.getPlistIndex(height, plSize, currPos)
 		else:
 			head = 0
 		# The tail can't be greater than the length of the playlist.
-		tail = min(plSize, head+plHeight)
+		tail = min(plSize, head+height)
 
 		resp = []
 		for i in range(head, tail):
@@ -224,41 +224,71 @@ class Player():
 
 		return resp
 
-	def wrapTextPL(self, text):
-		width = os.get_terminal_size()[0]
-		# TODO: this is a debug command
-		width = min(width, 50)
-
+	def wrapTextPL(self, text, width, height):
+		if not text:
+			return text
+		# Calculate indent size from playlist length.
 		# TODO: make sure this doesn't fail.
 		indent = '.' * (4 + len(self.plist[-1]['pos']))
-		entries = text.split('\n')
-		new_entries = []
-		for i in entries:
-			tmp = textwrap.wrap(i, width=width, subsequent_indent=indent)
-			for j in tmp:
-				new_entries.append(j)
+		# Actually wrap text, but convert it back to an array.
+		entries = self.wrap(text, width, indent)
+		entries = entries.split('\n')
 
-		# current pointer, input/output height, head/tail of display
-		ptr  = [i for i,v in enumerate(new_entries) if v.startswith(ESC)][0]
-		inH  = len(entries)
-		outH = len(new_entries)
-		head = self.getPlistIndex(inH, outH, ptr)
-		tail = min(outH, head+inH)
+		# Get current pointer and input length.
+		try:
+			ptr  = [i for i,v in enumerate(entries) if v.startswith(ESC)][0]
+		# It's possible there isn't a current song, so default to 0.
+		except IndexError:
+			ptr = 0
+		plSize = len(entries)
+		# Get head/tail given these parameters.
+		head = self.getPlistIndex(height, plSize, ptr)
+		tail = min(plSize, head+height)
 
-		resp = []
-		for i in range(head, tail):
-			resp.append(new_entries[i])
-
-		resp = '\n'.join(resp)
+		# Formulate result.
+		resp = '\n'.join(entries[head:tail])
 
 		return resp
 
 	def printDisplay(self):
+		# Get the size of the terminal, for wrapping, cropping, and padding.
+		termSize = os.get_terminal_size()
+		tw, th = termSize
+
+		# getTextNP() is perfectly fine, it doesn't need fixing.
+		textNP = self.getTextNP()
+
+		# Calculate width, wrap, and calculate height.
+		widthNP  = tw # min(tw, 60)
+		wrapNP   = self.wrapTextNP(textNP, widthNP)
+		heightNP = wrapNP.count('\n') + 1
+
+		finalNP  = wrapNP
+
+		# Calculate width, height, and then wrap.
+		heightPL = th - heightNP
+		widthPL  = tw # min(tw, 60)
+		textPL   = self.getTextPL(heightPL)
+		wrapPL   = self.wrapTextPL(textPL, widthPL, heightPL)
+
+		finalPL = wrapPL
+
+
+		# Start producing the final output.
 		text  = '\n'
-		text += self.getTextNP()
+		# text += '<BEGIN>'
+		text += finalNP
 		text += '\n'
-		text += self.getTextPL()
+		text += finalPL
+		# text += '<END>'
+
+		# Finally, pad text if necessary.
+		paddingHeight = th - text.count('\n')
+		padding = '\n' * paddingHeight
+		text += padding
+
 		print(text, end='')
+		return
 
 
 	# threaded functions
@@ -383,6 +413,16 @@ class Player():
 
 		if self.DEBUG: print('he: %s, te: %s, i: %i' % (headError, tailError, index))
 		return index
+
+	def wrap(self, text, width, indent):
+		entries = text.split('\n')
+		new_entries = []
+		for i in entries:
+			tmp = ansiwrap.wrap(i, width=width, subsequent_indent=indent)
+			for j in tmp:
+				new_entries.append(j)
+		resp = '\n'.join(new_entries)
+		return resp
 
 	def color(self, s, ansi):
 		return COLOR % ansi + s + COLOR % 0
