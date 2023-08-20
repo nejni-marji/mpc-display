@@ -42,8 +42,6 @@ class Player():
 		self.quit = False
 		# Hide the cursor.
 		print(ESC + '[?25l', end='')
-		# This was from an era when I thought I might have configurable colors.
-		# self.setColors()
 
 	def shutdown(self):
 		# idleLoop() will get an error, it needs to know we're quitting, or else
