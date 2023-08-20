@@ -117,23 +117,17 @@ class Player():
 		metadata['alb_total'] = self.getAlbumTotal(song)
 		metadata['album']     = self.getProp(song, 'album', 'Unknown')
 		metadata['state']     = self.getProp(status, 'state', None)
-		# The default is -1, so when we add 1, it becomes 0.
 		metadata['lst_track'] = int(self.getProp(status, 'song', -1)) + 1
 		metadata['lst_total'] = len(plist)
+		metadata['time_curr'] = int(float(self.getProp(status, 'elapsed', 0)))
+		metadata['time_song'] = int(float(self.getProp(status, 'duration', 0)))
+		metadata['time_pct']  = int(100*metadata['time_curr']/metadata['time_song'])
 		try:
-			# Rare case of not using getProp(), to save on try/except clauses.
-			times = [int(i) for i in status['time'].split(':')]
-			metadata['time_curr'] = int(times[0])
-			metadata['time_song'] = int(times[1])
-			metadata['time_pct']  = int(100*times[0]/times[1])
+			metadata['ersc']  = self.getERSC(status)
 		except KeyError:
-			metadata['time_curr'] = 0
-			metadata['time_song'] = 0
-			metadata['time_pct']  = 0
-		try:             metadata['ersc']   = self.getERSC(status)
-		except KeyError: metadata['ersc']   = '????'
-		metadata['volume'] = int(self.getProp(status, 'volume', -1))
-		metadata['xfade']  = int(self.getProp(status, 'xfade', 0))
+			metadata['ersc']  = '????'
+		metadata['volume']    = int(self.getProp(status, 'volume', -1))
+		metadata['xfade']     = int(self.getProp(status, 'xfade', 0))
 
 		# Publish the metadata to shared state.
 		self.metadata = metadata
