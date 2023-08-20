@@ -309,6 +309,7 @@ class Player():
 			# but generally, it *is* meant to be run.
 			if self.interactive:
 				self.printDisplay()
+				time.sleep(0.2)
 
 	def displayLoop(self):
 		# This function is meant to redraw the graphical display every so often.
