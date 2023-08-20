@@ -1,0 +1,3 @@
+[submodule "python-mpd2"]
+	path = python-mpd2
+	url = https://github.com/nejni-marji/python-mpd2
