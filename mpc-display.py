@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import sys
-import textwrap
 import threading
 import time
 
@@ -13,8 +12,6 @@ COLOR = '%s[%%sm' % ESC
 # CLEAR = ESC + '[H' + ESC + '[2J'
 
 
-
-# logging.basicConfig(encoding='utf-8', level=logging.INFO)
 
 class Player():
 	def __init__(self, interactive=False):
