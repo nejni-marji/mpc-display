@@ -360,10 +360,10 @@ class Player():
 		title = self.getProp(song, 'title', 'Unknown')
 		artist = self.getProp(song, 'artist', 'Unknown')
 		if artist.startswith('The '): artist = artist[4:]
-		ARTIST_MAX = 12
+		ARTIST_MAX = 10
 		if len(artist) > ARTIST_MAX:
-			artist = artist[:ARTIST_MAX] + '…'
-		entry = '%s - %s' % (artist, title)
+			artist = artist[:ARTIST_MAX-1] + '…'
+		entry = '%%- %is   %%s' % ARTIST_MAX % (artist, title)
 		numstr = '%%%ii' % len(self.plist[-1]['pos']) % num
 		resp = '  %s  %s' % (numstr, entry)
 		if curr:
