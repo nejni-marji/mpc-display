@@ -24,7 +24,6 @@ class Player():
 		except KeyError:
 			self.isDebug = False
 		if self.isDebug:
-			# self.debugCounter = {'display': 0, 'idle': 0, 'meta': 0}
 			self.debugCounter = {}
 			for i in 'display idle meta'.split(' '):
 				self.debugCounter[i] = 0
