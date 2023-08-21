@@ -358,12 +358,26 @@ class Player():
 		return ''.join(vals)
 
 	def formatTextPL(self, song, curr=False):
+		# Make an empty array and choose a field separator.
+		entry = []
+		sep = ' * '
+		# Join a list of properties by that field separator.
+		props = ['title']
+		props = ['title', 'artist', 'album']
+		for i in props:
+			tmp = self.getProp(song, i, None)
+			if tmp: entry.append(tmp)
+		# If entry isn't empty, join it by the separator `sep`.
+		if entry:
+			entry = sep.join(entry)
+		# Otherwise, take the tail of the filename instead.
+		else:
+			filename = self.getProp(song, 'file', None)
+			entry = filename.split('/')[-1]
+		# Get the playlist number for the song.
 		num = int(song['pos']) + 1
-		title = self.getProp(song, 'title', None)
-		if not title:
-			title = self.getProp(song, 'file', 'Unknown')
-			title = title.split('/')[-1]
-		entry = title
+		# This string is black magic, but it correctly right-justifies the
+		# playlist numbers for each entry.
 		numstr = '%%%ii' % len(self.status['playlistlength']) % num
 		resp = '  %s  %s' % (numstr, entry)
 		if curr:
