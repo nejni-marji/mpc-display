@@ -364,7 +364,7 @@ class Player():
 			title = self.getProp(song, 'file', 'Unknown')
 			title = title.split('/')[-1]
 		entry = title
-		numstr = '%%%ii' % len(self.plist[-1]['pos']) % num
+		numstr = '%%%ii' % len(self.status['playlistlength']) % num
 		resp = '  %s  %s' % (numstr, entry)
 		if curr:
 			resp = self.color('>' + resp[1:], '1')
