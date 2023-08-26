@@ -213,6 +213,8 @@ class Player():
 		if not text:
 			return text
 		# Calculate indent size from playlist length.
+		# This should not fail, because if it would fail, text should be empty,
+		# so we wouldn't get here.
 		indent = '.' * (4 + len(self.plist[-1]['pos']))
 		# Actually wrap text, but convert it back to an array.
 		entries = self.wrap(text, width, indent)
