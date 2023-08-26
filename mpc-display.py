@@ -303,8 +303,8 @@ class Player():
 					status, song = True, True
 				elif i == 'mixer' or i == 'options':
 					status = True
-				elif i == 'plist':
-					plist = true
+				elif i == 'playlist':
+					plist = True
 			# For certain flags, update certain states.
 			if status:
 				self.updateStatus()
