@@ -282,9 +282,6 @@ class Player():
 		subsystems = 'playlist player mixer options'.split()
 
 		while not self.quit:
-			# Basically... client.idle() will raise ConnectionError if the
-			# thread it's in gets killed. If we're going to quit, we can just
-			# break instead, and otherwise the error will be re-raised.
 			r = self.client.idle(*subsystems)
 
 			# Run one of several update functions based on what event was
