@@ -88,9 +88,9 @@ class Player():
 		
 		# Log some data
 		# TODO: potential bug: non-atomic caching
-		self.status = self.client.status()
-		self.song   = self.client.currentsong()
-		self.plist  = self.client.playlistid()
+		self.updateStatus()
+		self.updateSong()
+		self.updatePlist()
 		# Initialize metadata
 		self.updateMetadata()
 
@@ -307,11 +307,11 @@ class Player():
 					plist = true
 			# For certain flags, update certain states.
 			if status:
-				self.status = self.client.status()
+				self.updateStatus()
 			if song:
-				self.song = self.client.currentsong()
+				self.updateSong()
 			if plist:
-				self.plist = self.client.playlistid()
+				self.updatePlist()
 			# If there were any events, update metadata from the cache.
 			if events:
 				self.updateMetadata()
@@ -458,21 +458,14 @@ class Player():
 
 	# mutator helper functions
 
-	def playlistChange(self):
+	def updateStatus(self):
+		self.status = self.client.status()
+
+	def updateSong(self):
+		self.song = self.client.currentsong()
+
+	def updatePlist(self):
 		self.plist = self.client.playlistid()
-		self.updateMetadata()
-		pass
-
-	def playerChange(self):
-		self.status = self.client.status()
-		self.song   = self.client.currentsong()
-		self.updateMetadata()
-		pass
-
-	def mixerChange(self):
-		self.status = self.client.status()
-		self.updateMetadata()
-		pass
 
 	def optionsChange(self):
 		self.status = self.client.status()
