@@ -381,7 +381,8 @@ class Player():
 		if self.album != album:
 			self.album = album
 			self.albumTotal = len(self.client.find('album', album))
-			self.debugCounter['album'] += 1
+			if self.isDebug:
+				self.debugCounter['album'] += 1
 		# This is shared state, but that's a cache only meant to be accessed by
 		# this function, so we still just return it as normal.
 		return self.albumTotal
