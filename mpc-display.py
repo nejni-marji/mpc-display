@@ -283,19 +283,40 @@ class Player():
 
 		while not self.quit:
 			r = self.client.idle(*subsystems)
+			# Create events list, and fill it with the output of idle().
+			events = r
 
-			# Run one of several update functions based on what event was
-			# triggered.
-			# TODO: optimize these functions by bringing them back into
-			# idleLoop(), so that we only have to reference updateMetadata()
-			# once.
-			for i in r:
-				{
-						'playlist' : self.playlistChange,
-						'player'   : self.playerChange,
-						'mixer'    : self.mixerChange,
-						'options'  : self.optionsChange,
-				}[i]()
+			# Try to see if there's any other events in the system. Use a lock
+			# to prevent idleCancel() from being run multiple times.
+			lock = threading.Lock()
+			# Break the loop if idle() returns empty.
+			while r:
+				if lock.acquire(blocking=False):
+					self.idleCancel(lock)
+				r = self.client.idle(*subsystems)
+				# Append the output of idle() into events.
+				events += r
+
+			# For each event type, set certain flags.
+			status, song, plist = False, False, False
+			for i in events:
+				if i == 'player':
+					status, song = True, True
+				elif i == 'mixer' or i == 'options':
+					status = True
+				elif i == 'plist':
+					plist = true
+			# For certain flags, update certain states.
+			if status:
+				self.status = self.client.status()
+			if song:
+				self.song = self.client.currentsong()
+			if plist:
+				self.plist = self.client.playlistid()
+			# If there were any events, update metadata from the cache.
+			if events:
+				self.updateMetadata()
+
 			if self.isDebug:
 				self.debugCounter['idle'] += 1
 
@@ -331,6 +352,20 @@ class Player():
 				time.sleep(5)
 				self.printDisplay()
 
+	def idleCancel(self, lock, delay=0.1):
+		# It might be improper to use variables from outside the function scope
+		# like this, but I don't see a reason to pass them into the thread
+		# explicitly.
+		def f():
+			time.sleep(delay)
+			self.client.noidle()
+			lock.release()
+
+		thread = threading.Thread(target=f)
+		thread.start()
+		# We don't use the thread object, but I consider it prudent to return it
+		# regardless.
+		return thread
 
 	# helper functions
 
