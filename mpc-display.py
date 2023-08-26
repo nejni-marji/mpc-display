@@ -22,7 +22,7 @@ class Player():
 			self.isDebug = False
 		if self.isDebug:
 			self.debugCounter = {}
-			for i in 'display idle meta'.split(' '):
+			for i in 'display idle meta album'.split(' '):
 				self.debugCounter[i] = 0
 		self.interactive = interactive
 		# Initialize object
@@ -91,6 +91,8 @@ class Player():
 		self.updateStatus()
 		self.updateSong()
 		self.updatePlist()
+		self.album = None
+		self.albumTotal = 0
 		# Initialize metadata
 		self.updateMetadata()
 
@@ -375,10 +377,14 @@ class Player():
 			return default
 
 	def getAlbumTotal(self, song):
-		# TODO: optimize this by caching the current album, and not updating if
-		# the album hasn't changed.
 		album = self.getProp(song, 'album', None)
-		return len(self.client.find('album', album))
+		if self.album != album:
+			self.album = album
+			self.albumTotal = len(self.client.find('album', album))
+			self.debugCounter['album'] += 1
+		# This is shared state, but that's a cache only meant to be accessed by
+		# this function, so we still just return it as normal.
+		return self.albumTotal
 
 	def getERSC(self, status):
 		keys = ['repeat', 'random', 'single', 'consume']
