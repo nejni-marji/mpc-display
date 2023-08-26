@@ -257,7 +257,6 @@ class Player():
 
 		finalPL = wrapPL
 
-
 		# Start producing the final output.
 		text  = '\n'
 		# text += '<BEGIN>'
