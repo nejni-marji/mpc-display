@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import socket
 import sys
 import threading
 import time
@@ -42,11 +43,20 @@ class Player():
 			self.pollUser()
 
 	def startup(self):
+		try:
+			host = os.environ['MPD_HOST']
+			socket.gethostbyname(host)
+		except KeyError:
+			host = 'localhost'
+		try:
+			port = os.environ['MPD_PORT']
+		except KeyError:
+			port = 6600
 		# Create client object.
 		self.client = MPDClient()
 		self.client.timeout = 10
 		self.client.idletimeout = None
-		self.client.connect('localhost', 6600)
+		self.client.connect(host, port)
 		self.quit = False
 		# Hide the cursor.
 		if self.interactive:
