@@ -87,7 +87,6 @@ class Player():
 		# ERsc, 70%
 		
 		# Log some data
-		# TODO: potential bug: non-atomic caching
 		self.updateStatus()
 		self.updateSong()
 		self.updatePlist()
@@ -214,7 +213,6 @@ class Player():
 		if not text:
 			return text
 		# Calculate indent size from playlist length.
-		# TODO: make sure this doesn't fail.
 		indent = '.' * (4 + len(self.plist[-1]['pos']))
 		# Actually wrap text, but convert it back to an array.
 		entries = self.wrap(text, width, indent)
