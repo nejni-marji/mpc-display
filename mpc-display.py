@@ -135,7 +135,7 @@ class Player():
 			metadata['ersc'] = self.getERSC(status)
 		except KeyError:
 			metadata['ersc'] = '????'
-		metadata['volume']    = int(self.getProp(status, 'volume', -1))
+		metadata['volume']    = int(self.getProp(status, 'volume', 0))
 		metadata['xfade']     = int(self.getProp(status, 'xfade', 0))
 
 		# Publish the metadata to shared state.
