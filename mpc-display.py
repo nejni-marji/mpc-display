@@ -22,7 +22,7 @@ COLORS = {
 		}
 
 
-class Player():
+class Client():
 	# Defaults for event_delay and plist_fmt have to stay in sync with argparse.
 	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, event_delay=0.1, plist_fmt='title,artist,album'):
 		# Set up some debug flags.
@@ -522,7 +522,7 @@ if __name__ == '__main__':
 	# Use argparse to handle arguments.
 	import argparse
 
-	# Some of these defaults need to be in sync with the Player() init function.
+	# Some of these defaults need to be in sync with the Client() init function.
 	parser = argparse.ArgumentParser(
 			prog='mpc-display',
 			description='Displays the state of an MPD server.',
@@ -561,4 +561,4 @@ if __name__ == '__main__':
 
 	args = vars(parser.parse_args())
 
-	x = Player(interactive=True, **args)
+	x = Client(interactive=True, **args)
