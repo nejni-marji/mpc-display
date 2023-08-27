@@ -49,7 +49,6 @@ class Client():
 
 	def startup(self):
 		self.connect()
-		self.quit = False
 		self.initializeCache()
 		self.startThreads()
 		# Hide the cursor.
@@ -64,7 +63,6 @@ class Client():
 		if self.interactive:
 			print(ESC + '[?25h', end='')
 		self.stopThreads()
-		self.quit = True
 		self.disconnect()
 		if self.interactive:
 			exit()
@@ -82,20 +80,24 @@ class Client():
 		self.client.disconnect()
 
 	def startThreads(self):
+		self.quit = False
 		# Start waiting for MPD events
 		self.idleThread = threading.Thread(target=self.idleLoop)
 		self.idleThread.start()
 		# Theoretically, this is where regular updates are drawn to the screen.
 		if self.interactive:
+			self.displayEvent = threading.Event()
 			self.displayThread = threading.Thread(target=self.displayLoop)
 			self.displayThread.start()
 
 	def stopThreads(self):
+		self.quit = True
 		# Stop idling.
 		self.client.noidle()
 		# Join with a zero timeout to immediately kill the threads.
 		self.idleThread.join(timeout=0)
 		if self.interactive:
+			self.displayEvent.set()
 			self.displayThread.join(timeout=0)
 
 
@@ -360,6 +362,11 @@ class Client():
 			# This line may be commented out temporarily for testing purposes,
 			# but generally, it *is* meant to be run.
 			if self.interactive:
+				# Resetting the displayEvent flag will cause displayLoop to
+				# immediately run printDisplay(), regardless of play/pause
+				# state.
+				self.displayEvent.set()
+				self.displayEvent.clear()
 				self.printDisplay()
 				# TODO: find out if this is necessary
 				time.sleep(0.2)
@@ -375,7 +382,12 @@ class Client():
 			if self.getProp(self.status, 'state', 'paused')  == 'play':
 				delayTime = 2
 				songA = self.getProp(self.song, 'id', None)
-				time.sleep(delayTime)
+				# Wait for the event flag, but only to a maximum duration.
+				# If this function exits before its timeout, it's because
+				# idleLoop() has updated something. In such a case, the value of
+				# `time_curr` should have been updated anyway, so it doesn't
+				# really matter.
+				self.displayEvent.wait(timeout=delayTime)
 				songB = self.getProp(self.song, 'id', None)
 				if songA == songB and self.getProp(self.status, 'state', 'paused') == 'play':
 					self.metadata['time_curr'] += delayTime
@@ -385,7 +397,7 @@ class Client():
 					self.printDisplay()
 
 			else:
-				time.sleep(5)
+				self.displayEvent.wait()
 				self.printDisplay()
 
 	def idleCancel(self, lock):
