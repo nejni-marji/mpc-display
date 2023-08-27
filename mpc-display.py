@@ -35,6 +35,7 @@ class Player():
 		if self.interactive:
 			self.startup()
 
+
 	# initialization/deinitialization functions
 
 	def startup(self):
@@ -87,6 +88,7 @@ class Player():
 		self.idleThread.join(timeout=0)
 		if self.interactive:
 			self.displayThread.join(timeout=0)
+
 
 	# main runtime functions
 
