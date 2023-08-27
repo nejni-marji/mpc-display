@@ -308,14 +308,16 @@ class Player():
 
 			# Try to see if there's any other events in the system. Use a lock
 			# to prevent idleCancel() from being run multiple times.
-			lock = threading.Lock()
-			# Break the loop if idle() returns empty.
-			while r:
-				if lock.acquire(blocking=False):
-					self.idleCancel(lock)
-				r = self.client.idle(*subsystems)
-				# Append the output of idle() into events.
-				events += r
+			# Don't do this if the delay is 0.
+			if self.conf['event_delay']:
+				lock = threading.Lock()
+				# Break the loop if idle() returns empty.
+				while r:
+					if lock.acquire(blocking=False):
+						self.idleCancel(lock)
+					r = self.client.idle(*subsystems)
+					# Append the output of idle() into events.
+					events += r
 
 			# For each event type, set certain flags.
 			status, song, plist = False, False, False
