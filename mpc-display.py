@@ -15,7 +15,7 @@ COLOR = '%s[%%sm' % ESC
 
 
 class Player():
-	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, refresh=0.1, plist_fmt=['title', 'artist', 'album']):
+	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, event_delay=0.1, plist_fmt=['title', 'artist', 'album']):
 		# Set up some debug flags.
 		self.isDebug = debug
 		if self.isDebug:
@@ -29,7 +29,7 @@ class Player():
 				'port': port,
 				'timeout': timeout,
 				'idletimeout': idletimeout,
-				'refresh': refresh,
+				'event_delay': event_delay,
 				'plist_fmt': plist_fmt,
 				}
 		if self.interactive:
@@ -377,7 +377,7 @@ class Player():
 		# like this, but I don't see a reason to pass them into the thread
 		# explicitly.
 		def f():
-			time.sleep(self.conf['refresh'])
+			time.sleep(self.conf['event_delay'])
 			self.client.noidle()
 			lock.release()
 
