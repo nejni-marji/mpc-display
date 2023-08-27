@@ -11,6 +11,15 @@ ESC = '\x1b'
 COLOR = '%s[%%sm' % ESC
 # CLEAR = ESC + '[H' + ESC + '[2J'
 
+COLORS = {
+		'artist': '1;36', # bold cyan
+		'title' : '1;34', # bold blue
+		'track' : '32',   # green
+		'album' : '36',   # cyan
+		'play'  : '32',   # green
+		'pause' : '31',   # red
+		'curr'  : '1',    # bold
+		}
 
 
 class Player():
@@ -161,14 +170,14 @@ class Player():
 
 		# SONG: title, artist, album progress
 		songStr = '{} * {}\n({}) {}'.format(
-				color(data['artist'], '1;36'),
-				color(data['title'], '1;34'),
-				color('#%i/%i' % (data['alb_track'], data['alb_total']), '32'),
-				color(data['album'], '36'),
+				color(data['artist'], 'artist'),
+				color(data['title'], 'title'),
+				color('#%i/%i' % (data['alb_track'], data['alb_total']), 'track'),
+				color(data['album'], 'album'),
 				)
 
 		# STATUS: state, playlist progress, time, playback settings, volume
-		playColor = '32' if data['state'] == 'play' else '31'
+		playColor = 'play' if data['state'] == 'play' else 'pause'
 		timeStr = '{} {}/{}: {}/{}, {}%'.format(
 				'|>' if data['state'] == 'play' else '||',
 				data['lst_track'], data['lst_total'],
@@ -444,7 +453,7 @@ class Player():
 		numstr = '%%%ii' % len(self.status['playlistlength']) % num
 		resp = '  %s  %s' % (numstr, entry)
 		if curr:
-			resp = self.color('>' + resp[1:], '1')
+			resp = self.color('>' + resp[1:], 'curr')
 		return resp
 
 	def getPlistIndex(self, display, total, curr):
@@ -484,7 +493,8 @@ class Player():
 		resp = '\n'.join(new_entries)
 		return resp
 
-	def color(self, s, ansi):
+	def color(self, s, colorname):
+		ansi = COLORS[colorname]
 		return COLOR % ansi + s + COLOR % 0
 
 
