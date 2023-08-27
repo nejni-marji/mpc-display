@@ -15,7 +15,7 @@ COLOR = '%s[%%sm' % ESC
 
 
 class Player():
-	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, event_delay=0.1, plist_fmt=['title', 'artist', 'album']):
+	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, event_delay=0.1, plist_fmt='title artist album'):
 		# Set up some debug flags.
 		self.isDebug = debug
 		if self.isDebug:
@@ -419,7 +419,7 @@ class Player():
 		entry = []
 		sep = ' * '
 		# Join a list of properties by that field separator.
-		props = self.conf['plist_fmt']
+		props = self.conf['plist_fmt'].split(' ')
 		for i in props:
 			tmp = self.getProp(song, i, None)
 			if tmp: entry.append(tmp)
