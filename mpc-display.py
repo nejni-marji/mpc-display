@@ -22,18 +22,23 @@ CONF_DELAY = 0.1
 
 
 class Player():
-	def __init__(self, interactive=False):
+	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, refresh=0.1, plist_fmt=['title', 'artist', 'album']):
 		# Set up some debug flags.
-		try:
-			self.isDebug = os.environ['DEBUG'] in '1 True true yes on'.split(' ')
-		except KeyError:
-			self.isDebug = False
+		self.isDebug = debug
 		if self.isDebug:
 			self.debugCounter = {}
 			for i in 'display idle meta album'.split(' '):
 				self.debugCounter[i] = 0
 		# Store arguments to object state.
 		self.interactive = interactive
+		self.conf = {
+				'host': host,
+				'port': port,
+				'timeout': timeout,
+				'idletimeout': idletimeout,
+				'refresh': refresh,
+				'plist_fmt': plist_fmt,
+				}
 		if self.interactive:
 			self.startup()
 
@@ -62,20 +67,11 @@ class Player():
 			exit()
 
 	def connect(self):
-		try:
-			host = os.environ['MPD_HOST']
-			socket.gethostbyname(host)
-		except KeyError:
-			host = 'localhost'
-		try:
-			port = os.environ['MPD_PORT']
-		except KeyError:
-			port = 6600
 		# Create client object.
 		self.client = MPDClient()
-		self.client.timeout = 10
-		self.client.idletimeout = None
-		self.client.connect(host, port)
+		self.client.timeout = self.conf['timeout']
+		self.client.idletimeout = self.conf['idletimeout']
+		self.client.connect(self.conf['host'], self.conf['port'])
 
 	def disconnect(self):
 		# Properly disconnect from MPD.
@@ -383,12 +379,12 @@ class Player():
 				time.sleep(5)
 				self.printDisplay()
 
-	def idleCancel(self, lock, delay=CONF_DELAY):
+	def idleCancel(self, lock):
 		# It might be improper to use variables from outside the function scope
 		# like this, but I don't see a reason to pass them into the thread
 		# explicitly.
 		def f():
-			time.sleep(delay)
+			time.sleep(self.conf['refresh'])
 			self.client.noidle()
 			lock.release()
 
@@ -430,7 +426,7 @@ class Player():
 		entry = []
 		sep = ' * '
 		# Join a list of properties by that field separator.
-		props = CONF_PLIST
+		props = self.conf['plist_fmt']
 		for i in props:
 			tmp = self.getProp(song, i, None)
 			if tmp: entry.append(tmp)
@@ -506,4 +502,15 @@ class Player():
 
 
 if __name__ == '__main__':
-	x = Player(interactive=True)
+	def getEnv(prop, default):
+		try:
+			return os.environ[prop]
+		except KeyError:
+			return default
+
+	# Get values from environment variables.
+	debug = getEnv('DEBUG', '') in '1 True true yes on'.split(' ')
+	host = socket.gethostbyname(getEnv('MPD_HOST', 'localhost'))
+	port = getEnv('MPD_PORT', 6600)
+
+	x = Player(interactive=True, debug=debug, host=host, port=port)
