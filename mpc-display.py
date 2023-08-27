@@ -367,7 +367,6 @@ class Client():
 				# state.
 				self.displayEvent.set()
 				self.displayEvent.clear()
-				self.printDisplay()
 				# TODO: find out if this is necessary
 				time.sleep(0.2)
 
