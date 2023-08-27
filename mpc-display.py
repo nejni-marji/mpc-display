@@ -14,6 +14,13 @@ COLOR = '%s[%%sm' % ESC
 
 
 
+# CONFIGURATION
+CONF_PLIST = ['title']
+CONF_PLIST = ['title', 'artist', 'album']
+CONF_DELAY = 0.1
+
+
+
 class Player():
 	def __init__(self, interactive=False):
 		# Set up some debug flags.
@@ -363,7 +370,7 @@ class Player():
 				time.sleep(5)
 				self.printDisplay()
 
-	def idleCancel(self, lock, delay=0.1):
+	def idleCancel(self, lock, delay=CONF_DELAY):
 		# It might be improper to use variables from outside the function scope
 		# like this, but I don't see a reason to pass them into the thread
 		# explicitly.
@@ -410,8 +417,7 @@ class Player():
 		entry = []
 		sep = ' * '
 		# Join a list of properties by that field separator.
-		props = ['title']
-		props = ['title', 'artist', 'album']
+		props = CONF_PLIST
 		for i in props:
 			tmp = self.getProp(song, i, None)
 			if tmp: entry.append(tmp)
