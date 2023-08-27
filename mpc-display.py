@@ -361,6 +361,7 @@ class Client():
 			# but generally, it *is* meant to be run.
 			if self.interactive:
 				self.printDisplay()
+				# TODO: find out if this is necessary
 				time.sleep(0.2)
 
 	def displayLoop(self):
