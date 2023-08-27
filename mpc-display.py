@@ -391,6 +391,7 @@ class Player():
 		# regardless.
 		return thread
 
+
 	# helper functions
 
 	def getProp(self, data, prop, default):
