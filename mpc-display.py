@@ -37,6 +37,8 @@ class Player():
 		if self.interactive:
 			self.startup()
 
+	# initialization/deinitialization functions
+
 	def startup(self):
 		self.connect()
 		self.quit = False
@@ -96,6 +98,8 @@ class Player():
 		self.idleThread.join(timeout=0)
 		if self.interactive:
 			self.displayThread.join(timeout=0)
+
+	# main runtime functions
 
 	def pollUser(self):
 		try:
