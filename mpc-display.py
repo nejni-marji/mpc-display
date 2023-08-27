@@ -119,6 +119,7 @@ class Player():
 		self.updateStatus()
 		self.updateSong()
 		self.updatePlist()
+		# Create some caches.
 		self.album = None
 		self.albumTotal = 0
 		# Initialize metadata
