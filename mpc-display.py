@@ -488,7 +488,7 @@ class Player():
 		return COLOR % ansi + s + COLOR % 0
 
 
-	# mutator helper functions
+	# server accessor functions
 
 	def updateStatus(self):
 		self.status = self.client.status()
