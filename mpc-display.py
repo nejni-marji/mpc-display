@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import os
-import socket
 import sys
 import threading
 import time
@@ -15,7 +14,8 @@ COLOR = '%s[%%sm' % ESC
 
 
 class Player():
-	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, event_delay=0.1, plist_fmt='title artist album'):
+	# Defaults for event_delay and plist_fmt have to stay in sync with argparse.
+	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, event_delay=0.1, plist_fmt='title,artist,album'):
 		# Set up some debug flags.
 		self.isDebug = debug
 		if self.isDebug:
@@ -419,7 +419,7 @@ class Player():
 		entry = []
 		sep = ' * '
 		# Join a list of properties by that field separator.
-		props = self.conf['plist_fmt'].split(' ')
+		props = self.conf['plist_fmt'].split(',')
 		for i in props:
 			tmp = self.getProp(song, i, None)
 			if tmp: entry.append(tmp)
@@ -495,17 +495,53 @@ class Player():
 
 
 if __name__ == '__main__':
-	def getEnv(prop, default):
+	# Get environment variable or return fallback.
+	def getEnv(var, default):
 		try:
-			return os.environ[prop]
+			return os.environ[var]
 		except KeyError:
 			return default
 
-	# Get values from environment variables.
-	kwargs = {
-			'debug' : getEnv('DEBUG', '') in '1 True true yes on'.split(' '),
-			'host'  : socket.gethostbyname(getEnv('MPD_HOST', 'localhost')),
-			'port'  : getEnv('MPD_PORT', 6600),
-			}
+	# Use argparse to handle arguments.
+	import argparse
 
-	x = Player(interactive=True, **kwargs)
+	# Some of these defaults need to be in sync with the Player() init function.
+	parser = argparse.ArgumentParser(
+			prog='mpc-display',
+			description='Displays the state of an MPD server.',
+			epilog='TODO: write this')
+	parser.add_argument(
+			'--debug',
+			action = 'store_true',
+			default = getEnv('DEBUG', '') in '1 True true yes on'.split(' '),
+			help = 'enable debug mode',
+			)
+	parser.add_argument(
+			'-H', '--host',
+			default = getEnv('MPD_HOST', 'localhost'),
+			help = 'connect to server on <HOST>',
+			)
+	parser.add_argument(
+			'-P', '--port',
+			default = getEnv('MPD_PORT', 6600),
+			help = 'connect to server port <PORt>',
+			)
+	parser.add_argument(
+			'-f', '--fmt', dest='plist_fmt', metavar='FORMAT',
+			default = 'title,artist,album',
+			help = 'comma-separated list of song metadata to display'
+			)
+	parser.add_argument(
+			'-t', '--title', dest='plist_fmt', metavar='FORMAT',
+			action='store_const', const='title',
+			help = 'equivalent to \'--fmt title\'',
+			)
+	parser.add_argument(
+			'-d', '--delay', dest='event_delay', metavar='DELAY',
+			type = float, default = 0.1,
+			help = 'how long to wait after an update is triggered',
+			)
+
+	args = vars(parser.parse_args())
+
+	x = Player(interactive=True, **args)
