@@ -367,7 +367,8 @@ class Client():
 				# state.
 				self.displayEvent.set()
 				self.displayEvent.clear()
-				# TODO: find out if this is necessary
+				# This sleep statement means that multiple events in a short
+				# span of time will be ignored.
 				time.sleep(0.2)
 
 	def displayLoop(self):
