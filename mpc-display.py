@@ -503,9 +503,9 @@ if __name__ == '__main__':
 
 	# Get values from environment variables.
 	kwargs = {
-			'debug' = getEnv('DEBUG', '') in '1 True true yes on'.split(' '),
-			'host'  = socket.gethostbyname(getEnv('MPD_HOST', 'localhost')),
-			'port'  = getEnv('MPD_PORT', 6600),
+			'debug' : getEnv('DEBUG', '') in '1 True true yes on'.split(' '),
+			'host'  : socket.gethostbyname(getEnv('MPD_HOST', 'localhost')),
+			'port'  : getEnv('MPD_PORT', 6600),
 			}
 
 	x = Player(interactive=True, **kwargs)
