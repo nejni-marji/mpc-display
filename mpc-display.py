@@ -45,7 +45,7 @@ class Client():
 			self.startup()
 
 
-	# initialization/deinitialization functions
+	# startup/shutdown functions
 
 	def startup(self):
 		self.connect()
@@ -56,7 +56,7 @@ class Client():
 			print(ESC + '[?25l', end='')
 			# If interactive, read user input and display data.
 			self.printDisplay()
-			self.pollUser()
+			self.runInteractive()
 
 	def shutdown(self):
 		# Unhide the cursor.
@@ -100,14 +100,14 @@ class Client():
 			self.displayEvent.set()
 			self.displayThread.join(timeout=0)
 
-
-	# main runtime functions
-
-	def pollUser(self):
+	def runInteractive(self):
 		try:
 			self.idleThread.join()
 		except KeyboardInterrupt:
 			self.shutdown()
+
+
+	# main runtime functions
 
 	def initializeCache(self):
 		pass
