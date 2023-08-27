@@ -509,7 +509,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
 			prog='mpc-display',
 			description='Displays the state of an MPD server.',
-			epilog='TODO: write this')
+			)
 	parser.add_argument(
 			'--debug',
 			action = 'store_true',
