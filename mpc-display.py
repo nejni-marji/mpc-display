@@ -14,13 +14,6 @@ COLOR = '%s[%%sm' % ESC
 
 
 
-# CONFIGURATION
-CONF_PLIST = ['title']
-CONF_PLIST = ['title', 'artist', 'album']
-CONF_DELAY = 0.1
-
-
-
 class Player():
 	def __init__(self, debug=False, interactive=False, host='localhost', port='6600', timeout=10, idletimeout=None, refresh=0.1, plist_fmt=['title', 'artist', 'album']):
 		# Set up some debug flags.
