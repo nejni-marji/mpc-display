@@ -83,11 +83,11 @@ class Client():
 
 	def startThreads(self):
 		# Start waiting for MPD events
-		self.idleThread = threading.Thread(target=self.idleLoop, args=())
+		self.idleThread = threading.Thread(target=self.idleLoop)
 		self.idleThread.start()
 		# Theoretically, this is where regular updates are drawn to the screen.
 		if self.interactive:
-			self.displayThread = threading.Thread(target=self.displayLoop, args=())
+			self.displayThread = threading.Thread(target=self.displayLoop)
 			self.displayThread.start()
 
 	def stopThreads(self):
