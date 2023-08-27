@@ -32,43 +32,29 @@ class Player():
 			self.debugCounter = {}
 			for i in 'display idle meta album'.split(' '):
 				self.debugCounter[i] = 0
+		# Store arguments to object state.
 		self.interactive = interactive
-		# Initialize object
-		self.startup()
-		# Initialize data
-		self.initializeCache()
-		# Start waiting for MPD events
-		self.idleThread = threading.Thread(target=self.idleLoop, args=())
-		self.idleThread.start()
-		# Theoretically, this is where regular updates are drawn to the screen.
-		if interactive:
-			self.displayThread = threading.Thread(target=self.displayLoop, args=())
-			self.displayThread.start()
-		# If we aren't importing the library, read user input.
-		if interactive:
-			self.printDisplay()
-			self.pollUser()
+		if self.interactive:
+			self.startup()
 
 	def startup(self):
 		self.connect()
 		self.quit = False
+		self.initializeCache()
+		self.startThreads()
 		# Hide the cursor.
 		if self.interactive:
 			print(ESC + '[?25l', end='')
+			# If interactive, read user input and display data.
+			self.printDisplay()
+			self.pollUser()
 
 	def shutdown(self):
-		# idleLoop() will get an error, it needs to know we're quitting, or else
-		# it will re-raise that error.
-		self.quit = True
 		# Unhide the cursor.
 		if self.interactive:
 			print(ESC + '[?25h', end='')
-		# Stop idling.
-		self.client.noidle()
-		# Join with a zero timeout to immediately kill the threads.
-		self.idleThread.join(timeout=0)
-		if self.interactive:
-			self.displayThread.join(timeout=0)
+		self.stopThreads()
+		self.quit = True
 		self.disconnect()
 		if self.interactive:
 			exit()
@@ -93,6 +79,23 @@ class Player():
 		# Properly disconnect from MPD.
 		self.client.close()
 		self.client.disconnect()
+
+	def startThreads(self):
+		# Start waiting for MPD events
+		self.idleThread = threading.Thread(target=self.idleLoop, args=())
+		self.idleThread.start()
+		# Theoretically, this is where regular updates are drawn to the screen.
+		if self.interactive:
+			self.displayThread = threading.Thread(target=self.displayLoop, args=())
+			self.displayThread.start()
+
+	def stopThreads(self):
+		# Stop idling.
+		self.client.noidle()
+		# Join with a zero timeout to immediately kill the threads.
+		self.idleThread.join(timeout=0)
+		if self.interactive:
+			self.displayThread.join(timeout=0)
 
 	def pollUser(self):
 		try:
