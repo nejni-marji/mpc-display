@@ -499,11 +499,6 @@ class Player():
 	def updatePlist(self):
 		self.plist = self.client.playlistid()
 
-	def optionsChange(self):
-		self.status = self.client.status()
-		self.updateMetadata()
-		pass
-
 
 
 if __name__ == '__main__':
