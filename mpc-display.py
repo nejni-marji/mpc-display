@@ -502,8 +502,10 @@ if __name__ == '__main__':
 			return default
 
 	# Get values from environment variables.
-	debug = getEnv('DEBUG', '') in '1 True true yes on'.split(' ')
-	host = socket.gethostbyname(getEnv('MPD_HOST', 'localhost'))
-	port = getEnv('MPD_PORT', 6600)
+	kwargs = {
+			'debug' = getEnv('DEBUG', '') in '1 True true yes on'.split(' '),
+			'host'  = socket.gethostbyname(getEnv('MPD_HOST', 'localhost')),
+			'port'  = getEnv('MPD_PORT', 6600),
+			}
 
-	x = Player(interactive=True, debug=debug, host=host, port=port)
+	x = Player(interactive=True, **kwargs)
