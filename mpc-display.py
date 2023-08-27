@@ -110,9 +110,8 @@ class Player():
 	def initializeCache(self):
 		pass
 		# Example of what state we want to store, generally:
-		# EarthBound 'Battling Organs' OC ReMix
-		# Mazedude (#1371/3697)
-		# http://ocremix.org
+		# Mazedude [SEP] EarthBound 'Battling Organs' OC ReMix
+		# (#1371/3697) http://ocremix.org
 		# |> #14/69: 0:27/2:51, 15%
 		# ERsc, 70%
 		
@@ -137,8 +136,8 @@ class Player():
 
 		# Store copies of all the data we care about.
 		metadata = {}
-		metadata['title']     = self.getProp(song, 'title', 'Unknown')
 		metadata['artist']    = self.getProp(song, 'artist', 'Unknown')
+		metadata['title']     = self.getProp(song, 'title', 'Unknown')
 		metadata['alb_track'] = int(self.getProp(song, 'track', 0))
 		metadata['alb_total'] = self.getAlbumTotal(song)
 		metadata['album']     = self.getProp(song, 'album', 'Unknown')
