@@ -561,4 +561,4 @@ if __name__ == '__main__':
 
 	args = vars(parser.parse_args())
 
-	x = Client(interactive=True, **args)
+	Client(interactive=True, **args)
