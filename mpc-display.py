@@ -160,10 +160,11 @@ class Player():
 		# initializeCache().
 
 		# SONG: title, artist, album progress
-		songStr = '{}\n{} ({})'.format(
-				color(data['title'], '1;34'),
+		songStr = '{} * {}\n({}) {}'.format(
 				color(data['artist'], '1;36'),
+				color(data['title'], '1;34'),
 				color('#%i/%i' % (data['alb_track'], data['alb_total']), '32'),
+				color(data['album'], '36'),
 				)
 
 		# STATUS: state, playlist progress, time, playback settings, volume
