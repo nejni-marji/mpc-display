@@ -314,6 +314,7 @@ class Player():
 			if self.conf['event_delay']:
 				lock = threading.Lock()
 				# Break the loop if idle() returns empty.
+				# This loop won't error, because `r` must already be defined.
 				while r:
 					if lock.acquire(blocking=False):
 						self.idleCancel(lock)
