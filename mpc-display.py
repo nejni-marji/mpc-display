@@ -181,7 +181,7 @@ class Client():
 		# STATUS: state, playlist progress, time, playback settings, volume
 		playColor = 'play' if data['state'] == 'play' else 'pause'
 		timeStr = '{} {}/{}: {}/{}, {}%'.format(
-				'|>' if data['state'] == 'play' else '||',
+				'|>' if data['state'] == 'play' else '[]',
 				data['lst_track'], data['lst_total'],
 				'%i:%02i' % divmod(data['time_curr'], 60),
 				'%i:%02i' % divmod(data['time_song'], 60),
