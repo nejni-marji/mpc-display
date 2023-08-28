@@ -391,6 +391,7 @@ class Client():
 				songB = self.getProp(self.song, 'id', None)
 				if songA == songB and self.getProp(self.status, 'state', 'paused') == 'play':
 					self.metadata['time_curr'] += delayTime
+					self.metadata['time_pct'] = int(100*self.metadata['time_curr']/self.metadata['time_song'])
 
 				# Finally, show the display.
 				if not self.quit:
