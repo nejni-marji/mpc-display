@@ -10,6 +10,7 @@ import ansiwrap
 ESC = '\x1b'
 COLOR = '%s[%%sm' % ESC
 METADATA_SEP = ' & '
+PLAYLIST_SEP = ' * '
 
 COLORS = {
 		'artist': '1;36', # bold cyan
@@ -112,7 +113,7 @@ class Client():
 	def initializeCache(self):
 		pass
 		# Example of what state we want to store, generally:
-		# Mazedude [SEP] EarthBound 'Battling Organs' OC ReMix
+		# Mazedude [PLAYLIST_SEP] EarthBound 'Battling Organs' OC ReMix
 		# (#1371/3697) http://ocremix.org
 		# |> #14/69: 0:27/2:51, 15%
 		# ERsc, 70%
@@ -450,7 +451,6 @@ class Client():
 	def formatTextPL(self, song, curr=False):
 		# Make an empty array and choose a field separator.
 		entry = []
-		sep = ' * '
 		# Join a list of properties by that field separator.
 		props = self.conf['plist_fmt'].split(',')
 		for i in props:
@@ -458,9 +458,9 @@ class Client():
 			if type(tmp) == list:
 				tmp = METADATA_SEP.join(tmp)
 			if tmp: entry.append(tmp)
-		# If entry isn't empty, join it by the separator `sep`.
+		# If entry isn't empty, join it by PLAYLIST_SEP.
 		if entry:
-			entry = sep.join(entry)
+			entry = PLAYLIST_SEP.join(entry)
 		# Otherwise, take the tail of the filename instead.
 		else:
 			filename = self.getProp(song, 'file', None)
