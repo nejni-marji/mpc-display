@@ -9,6 +9,7 @@ import ansiwrap
 
 ESC = '\x1b'
 COLOR = '%s[%%sm' % ESC
+METADATA_SEP = ' & '
 
 COLORS = {
 		'artist': '1;36', # bold cyan
@@ -158,6 +159,9 @@ class Client():
 			metadata['ersc'] = '????'
 		metadata['volume']    = int(self.getProp(status, 'volume', 0))
 		metadata['xfade']     = int(self.getProp(status, 'xfade', 0))
+
+		if type(metadata['artist']) == list:
+			metadata['artist'] = METADATA_SEP.join(metadata['artist'])
 
 		# Publish the metadata to shared state.
 		self.metadata = metadata
@@ -451,6 +455,8 @@ class Client():
 		props = self.conf['plist_fmt'].split(',')
 		for i in props:
 			tmp = self.getProp(song, i, None)
+			if type(tmp) == list:
+				tmp = METADATA_SEP.join(tmp)
 			if tmp: entry.append(tmp)
 		# If entry isn't empty, join it by the separator `sep`.
 		if entry:
