@@ -9,7 +9,6 @@ import ansiwrap
 
 ESC = '\x1b'
 COLOR = '%s[%%sm' % ESC
-# CLEAR = ESC + '[H' + ESC + '[2J'
 
 COLORS = {
 		'artist': '1;36', # bold cyan
